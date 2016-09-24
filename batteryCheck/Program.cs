@@ -30,8 +30,6 @@ namespace batteryCheck
             Console.WriteLine("SYSTEM_POWER_STATUS AC Line status {0}",         sps.ACLineStatus);
             Console.WriteLine("SYSTEM_POWER_STATUS Battery flag {0}",           sps.BatteryFlag);
             Console.WriteLine("SYSTEM_POWER_STATUS Battery Life Percent {0}",   sps.BatteryLifePercent);
-
-
         }
     }
 }
