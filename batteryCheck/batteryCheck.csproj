@@ -43,22 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatteryInfo.cs" />
-    <Compile Include="BatteryInformation.cs" />
-    <Compile Include="BATTERY_INFORMATION.cs" />
-    <Compile Include="BATTERY_QUERY_INFORMATION.cs" />
-    <Compile Include="BATTERY_QUERY_INFORMATION_LEVEL.cs" />
-    <Compile Include="BATTERY_STATUS.cs" />
-    <Compile Include="BATTERY_WAIT_STATUS.cs" />
-    <Compile Include="DEVICE_GET_CLASS_FLAGS.cs" />
-    <Compile Include="FILE_ATTRIBUTES.cs" />
-    <Compile Include="LOCAL_MEMORY_FLAGS.cs" />
-    <Compile Include="PowerState.cs" />
+    <Compile Include="Win32\BatteryInfo.cs" />
+    <Compile Include="Win32\BatteryInformation.cs" />
+    <Compile Include="Win32\BATTERY_INFORMATION.cs" />
+    <Compile Include="Win32\BATTERY_QUERY_INFORMATION.cs" />
+    <Compile Include="Win32\BATTERY_QUERY_INFORMATION_LEVEL.cs" />
+    <Compile Include="Win32\BATTERY_STATUS.cs" />
+    <Compile Include="Win32\BATTERY_WAIT_STATUS.cs" />
+    <Compile Include="Win32\LOCAL_MEMORY_FLAGS.cs" />
+    <Compile Include="Win32\POWER_STATE.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SP_DEVICE_INTERFACE_DATA.cs" />
-    <Compile Include="SP_DEVICE_INTERFACE_DETAIL_DATA.cs" />
-    <Compile Include="Win32.cs" />
+    <Compile Include="Win32\SP_DEVICE_INTERFACE_DATA.cs" />
+    <Compile Include="Win32\SP_DEVICE_INTERFACE_DETAIL_DATA.cs" />
+    <Compile Include="Win32\Api.cs" />
+    <Compile Include="Win32\DEVICE_GET_CLASS_FLAGS.cs" />
+    <Compile Include="Win32\FILE_ATTRIBUTES.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

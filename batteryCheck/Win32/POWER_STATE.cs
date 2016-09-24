@@ -3,7 +3,7 @@
 namespace batteryCheck
 {
     [Flags]
-    public enum PowerState
+    public enum POWER_STATE
     {
         BATTERY_POWER_ONLINE = 0x00000001,
         BATTERY_DISCHARGING = 0x00000002,
