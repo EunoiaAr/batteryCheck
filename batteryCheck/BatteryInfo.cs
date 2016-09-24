@@ -10,13 +10,12 @@ namespace batteryCheck
 
         public static BatteryInformation GetBatteryInformation()
         {
-            IntPtr deviceDataPointer = IntPtr.Zero;
             IntPtr queryInfoPointer = IntPtr.Zero;
             IntPtr batteryInfoPointer = IntPtr.Zero;
             IntPtr batteryWaitStatusPointer = IntPtr.Zero;
             IntPtr batteryStatusPointer = IntPtr.Zero;
             try {
-                var deviceHandle = SetupDiGetClassDevs(Win32.GUID_DEVCLASS_BATTERY, 
+                var deviceHandle = SetupDiGetClassDevs(Win32.GUID_DEVCLASS_BATTERY,
                                                        Win32.DEVICE_GET_CLASS_FLAGS.DIGCF_PRESENT | Win32.DEVICE_GET_CLASS_FLAGS.DIGCF_DEVICEINTERFACE);
 
                 var deviceInterfaceData = new Win32.SP_DEVICE_INTERFACE_DATA();
@@ -24,12 +23,10 @@ namespace batteryCheck
 
                 SetupDiEnumDeviceInterfaces(deviceHandle, Win32.GUID_DEVCLASS_BATTERY, 0, ref deviceInterfaceData);
 
-                deviceDataPointer       = Marshal.AllocHGlobal(Win32.DEVICE_INTERFACE_BUFFER_SIZE);
-
                 var deviceDetailData    = new Win32.SP_DEVICE_INTERFACE_DETAIL_DATA();
                 deviceDetailData.CbSize = (IntPtr.Size == 8) ? 8 : 4 + Marshal.SystemDefaultCharSize;
 
-                SetupDiGetDeviceInterfaceDetail(deviceHandle, ref deviceInterfaceData, ref deviceDetailData, Win32.DEVICE_INTERFACE_BUFFER_SIZE);
+                SetupDiGetDeviceInterfaceDetail(deviceHandle, ref deviceInterfaceData, ref deviceDetailData);
 
                 var batteryHandle       = CreateFile(deviceDetailData.DevicePath, FileAccess.ReadWrite, FileShare.ReadWrite, FileMode.Open, Win32.FILE_ATTRIBUTES.Normal);
                 var queryInformation    = new Win32.BATTERY_QUERY_INFORMATION();
@@ -67,11 +64,13 @@ namespace batteryCheck
 
                 DeviceIoControl(batteryHandle, Win32.IOCTL_BATTERY_QUERY_STATUS, batteryWaitStatusPointer, waitStatusSize, batteryStatusPointer, batteryStatusSize);
 
-                var updatedStatus       = (Win32.BATTERY_STATUS)Marshal.PtrToStructure(batteryStatusPointer, typeof(Win32.BATTERY_STATUS));
-
+                var updatedStatus           = (Win32.BATTERY_STATUS) Marshal.PtrToStructure(batteryStatusPointer, typeof(Win32.BATTERY_STATUS));
+                var updatedInformation      = (Win32.BATTERY_INFORMATION) Marshal.PtrToStructure(batteryInfoPointer, typeof(Win32.BATTERY_INFORMATION));
+                var updatedQueryInformation = (Win32.BATTERY_QUERY_INFORMATION) Marshal.PtrToStructure(batteryInfoPointer, typeof(Win32.BATTERY_QUERY_INFORMATION));
                 Win32.SetupDiDestroyDeviceInfoList(deviceHandle);
 
                 return new BatteryInformation() {
+                    PowerState = updatedStatus.PowerState,
                     DesignedMaxCapacity = updatedBatteryInformation.DesignedCapacity,
                     FullChargeCapacity = updatedBatteryInformation.FullChargedCapacity,
                     CurrentCapacity = updatedStatus.Capacity,
@@ -81,7 +80,6 @@ namespace batteryCheck
             } catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
             } finally {
-                Marshal.FreeHGlobal(deviceDataPointer);
                 Marshal.FreeHGlobal(queryInfoPointer);
                 Marshal.FreeHGlobal(batteryInfoPointer);
                 Marshal.FreeHGlobal(batteryStatusPointer);
@@ -145,10 +143,9 @@ namespace batteryCheck
         }
 
         private static bool SetupDiEnumDeviceInterfaces(
-            IntPtr deviceInfoSet, Guid guid, int memberIndex, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData)
+            IntPtr deviceInfoSet, Guid guid, uint memberIndex, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData)
         {
-            bool retval = Win32.SetupDiEnumDeviceInterfaces(
-                deviceInfoSet, IntPtr.Zero, ref guid, (uint)memberIndex, ref deviceInterfaceData);
+            bool retval = Win32.SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref guid, memberIndex, ref deviceInterfaceData);
 
             if (!retval) {
                 int errorCode = Marshal.GetLastWin32Error();
@@ -180,22 +177,28 @@ namespace batteryCheck
         }
 
         private static bool SetupDiGetDeviceInterfaceDetail(
-            IntPtr deviceInfoSet, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref Win32.SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData, int deviceInterfaceDetailSize)
+            IntPtr deviceInfoSet, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref Win32.SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData)
         {
-            uint reqSize;
+            uint reqSize = 0;
             bool retval = Win32.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
                                                                 ref deviceInterfaceData,
-                                                                ref deviceInterfaceDetailData,
-                                                                (uint) deviceInterfaceDetailSize,
+                                                                IntPtr.Zero,
+                                                                reqSize,
                                                                 out reqSize,
                                                                 IntPtr.Zero);
-            retval = Win32.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
-                                                                ref deviceInterfaceData,
-                                                                ref deviceInterfaceDetailData,
-                                                                (uint) reqSize,
-                                                                out reqSize,
-                                                                IntPtr.Zero);
+            if (!retval) {
+                if (Marshal.GetLastWin32Error() == Win32.ERROR_INSUFFICIENT_BUFFER) {
+                    if (reqSize > Marshal.SizeOf(deviceInterfaceDetailData))
+                        throw new ApplicationException("insufficient structure memory in SP_DEVIC_INTERFACE_DETAIL_DATA");
 
+                    retval = Win32.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
+                                                                        ref deviceInterfaceData,
+                                                                        ref deviceInterfaceDetailData,
+                                                                        reqSize,
+                                                                        out reqSize,
+                                                                        IntPtr.Zero);
+                }
+            }
             if (!retval) {
                 int errorCode = Marshal.GetLastWin32Error();
                 if (errorCode != 0)

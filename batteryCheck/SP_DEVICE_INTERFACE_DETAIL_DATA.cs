@@ -4,7 +4,6 @@ namespace batteryCheck
 {
     internal static partial class Win32
     {
-
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         internal struct SP_DEVICE_INTERFACE_DETAIL_DATA
         {

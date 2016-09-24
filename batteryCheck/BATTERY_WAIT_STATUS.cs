@@ -10,7 +10,7 @@ namespace batteryCheck
         {
             public uint BatteryTag;
             public uint Timeout;
-            public POWER_STATE PowerState;
+            public PowerState PowerState;
             public uint LowCapacity;
             public uint HighCapacity;
         }

@@ -11,7 +11,7 @@ namespace batteryCheck
         internal const uint IOCTL_BATTERY_QUERY_INFORMATION = (0x00000029 << 16) | ((int)FileAccess.Read << 14) | (0x11 << 2) | (0);
         internal const uint IOCTL_BATTERY_QUERY_STATUS = (0x00000029 << 16) | ((int)FileAccess.Read << 14) | (0x13 << 2) | (0);
 
-        internal const int DEVICE_INTERFACE_BUFFER_SIZE = 120;
+        internal const long ERROR_INSUFFICIENT_BUFFER = 122;
 
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
