@@ -92,7 +92,7 @@ namespace batteryCheck
         {
             uint bytesReturned;
             uint junkInput = 0;
-            bool retval = Api.DeviceIoControl(
+            bool retval = Api.Kernel.DeviceIoControl(
                 deviceHandle, controlCode, ref junkInput, 0, ref output, (uint)Marshal.SizeOf(output), out bytesReturned, IntPtr.Zero);
 
             if (!retval) {
@@ -110,7 +110,7 @@ namespace batteryCheck
         static bool DeviceIoControl(IntPtr deviceHandle, uint controlCode, IntPtr input, int inputSize, IntPtr output, int outputSize)
         {
             uint bytesReturned;
-            bool retval = Api.DeviceIoControl(
+            bool retval = Api.Kernel.DeviceIoControl(
                 deviceHandle, controlCode, input, (uint)inputSize, output, (uint)outputSize, out bytesReturned, IntPtr.Zero);
 
             if (!retval) {
@@ -127,7 +127,7 @@ namespace batteryCheck
 
         static IntPtr SetupDiGetClassDevs(Guid guid, DEVICE_GET_CLASS_FLAGS flags)
         {
-            IntPtr handle = Api.SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, flags);
+            IntPtr handle = Api.SetupApi.SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, flags);
 
             if (handle == IntPtr.Zero || handle.ToInt32() == -1) {
                 int errorCode = Marshal.GetLastWin32Error();
@@ -141,7 +141,7 @@ namespace batteryCheck
 
         static bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, Guid guid, uint memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData)
         {
-            bool retval = Api.SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref guid, memberIndex, ref deviceInterfaceData);
+            bool retval = Api.SetupApi.SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref guid, memberIndex, ref deviceInterfaceData);
 
             if (!retval) {
                 int errorCode = Marshal.GetLastWin32Error();
@@ -175,7 +175,7 @@ namespace batteryCheck
         static bool SetupDiGetDeviceInterfaceDetail(IntPtr deviceInfoSet, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData)
         {
             uint reqSize = 0;
-            bool retval = Api.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
+            bool retval = Api.SetupApi.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
                                                                 ref deviceInterfaceData,
                                                                 IntPtr.Zero,
                                                                 reqSize,
@@ -186,7 +186,7 @@ namespace batteryCheck
                     if (reqSize > Marshal.SizeOf(deviceInterfaceDetailData))
                         throw new ApplicationException("insufficient structure memory in SP_DEVIC_INTERFACE_DETAIL_DATA");
 
-                    retval = Api.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
+                    retval = Api.SetupApi.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
                                                                         ref deviceInterfaceData,
                                                                         ref deviceInterfaceDetailData,
                                                                         reqSize,
@@ -207,7 +207,7 @@ namespace batteryCheck
 
         static IntPtr CreateFile(string filename, FileAccess access, FileShare shareMode, FileMode creation, FILE_ATTRIBUTES flags)
         {
-            IntPtr handle = Api.CreateFile(
+            IntPtr handle = Api.Kernel.CreateFile(
                 filename, access, shareMode, IntPtr.Zero, creation, flags, IntPtr.Zero);
 
             if (handle == IntPtr.Zero || handle.ToInt32() == -1) {

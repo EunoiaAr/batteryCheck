@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="BatteryInfo.cs" />
     <Compile Include="BatteryInformation.cs" />
+    <Compile Include="Win32\Api.Kernel.cs" />
     <Compile Include="Win32\BATTERY_INFORMATION.cs" />
     <Compile Include="Win32\BATTERY_QUERY_INFORMATION.cs" />
     <Compile Include="Win32\BATTERY_QUERY_INFORMATION_LEVEL.cs" />
@@ -62,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Win32\Api.SetupApi.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
