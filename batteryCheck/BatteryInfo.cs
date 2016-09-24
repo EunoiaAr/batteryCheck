@@ -7,7 +7,6 @@ namespace batteryCheck
 
     public static class BatteryInfo
     {
-
         public static BatteryInformation GetBatteryInformation()
         {
             IntPtr queryInfoPointer = IntPtr.Zero;
@@ -88,9 +87,7 @@ namespace batteryCheck
             return null;
         }
 
-
-
-        private static bool DeviceIoControl(IntPtr deviceHandle, uint controlCode, ref uint output)
+        static bool DeviceIoControl(IntPtr deviceHandle, uint controlCode, ref uint output)
         {
             uint bytesReturned;
             uint junkInput = 0;
@@ -109,8 +106,7 @@ namespace batteryCheck
             return retval;
         }
 
-        private static bool DeviceIoControl(
-            IntPtr deviceHandle, uint controlCode, IntPtr input, int inputSize, IntPtr output, int outputSize)
+        static bool DeviceIoControl(IntPtr deviceHandle, uint controlCode, IntPtr input, int inputSize, IntPtr output, int outputSize)
         {
             uint bytesReturned;
             bool retval = Win32.DeviceIoControl(
@@ -128,7 +124,7 @@ namespace batteryCheck
             return retval;
         }
 
-        private static IntPtr SetupDiGetClassDevs(Guid guid, Win32.DEVICE_GET_CLASS_FLAGS flags)
+        static IntPtr SetupDiGetClassDevs(Guid guid, Win32.DEVICE_GET_CLASS_FLAGS flags)
         {
             IntPtr handle = Win32.SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, flags);
 
@@ -142,8 +138,7 @@ namespace batteryCheck
             return handle;
         }
 
-        private static bool SetupDiEnumDeviceInterfaces(
-            IntPtr deviceInfoSet, Guid guid, uint memberIndex, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData)
+        static bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, Guid guid, uint memberIndex, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData)
         {
             bool retval = Win32.SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref guid, memberIndex, ref deviceInterfaceData);
 
@@ -161,7 +156,7 @@ namespace batteryCheck
             return retval;
         }
 
-        private static bool SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet)
+        static bool SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet)
         {
             bool retval = Win32.SetupDiDestroyDeviceInfoList(deviceInfoSet);
 
@@ -176,8 +171,7 @@ namespace batteryCheck
             return retval;
         }
 
-        private static bool SetupDiGetDeviceInterfaceDetail(
-            IntPtr deviceInfoSet, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref Win32.SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData)
+        static bool SetupDiGetDeviceInterfaceDetail(IntPtr deviceInfoSet, ref Win32.SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref Win32.SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData)
         {
             uint reqSize = 0;
             bool retval = Win32.SetupDiGetDeviceInterfaceDetail(deviceInfoSet,
@@ -210,8 +204,7 @@ namespace batteryCheck
             return retval;
         }
 
-        private static IntPtr CreateFile(
-            string filename, FileAccess access, FileShare shareMode, FileMode creation, Win32.FILE_ATTRIBUTES flags)
+        static IntPtr CreateFile(string filename, FileAccess access, FileShare shareMode, FileMode creation, Win32.FILE_ATTRIBUTES flags)
         {
             IntPtr handle = Win32.CreateFile(
                 filename, access, shareMode, IntPtr.Zero, creation, flags, IntPtr.Zero);
