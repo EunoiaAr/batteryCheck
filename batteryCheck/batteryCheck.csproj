@@ -43,8 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Win32\BatteryInfo.cs" />
-    <Compile Include="Win32\BatteryInformation.cs" />
+    <Compile Include="BatteryInfo.cs" />
+    <Compile Include="BatteryInformation.cs" />
     <Compile Include="Win32\BATTERY_INFORMATION.cs" />
     <Compile Include="Win32\BATTERY_QUERY_INFORMATION.cs" />
     <Compile Include="Win32\BATTERY_QUERY_INFORMATION_LEVEL.cs" />
