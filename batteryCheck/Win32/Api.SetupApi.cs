@@ -10,10 +10,10 @@ namespace batteryCheck.Win32
         {
             [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
             public static extern IntPtr SetupDiGetClassDevs(
-				ref Guid guid,
-				[MarshalAs(UnmanagedType.LPTStr)] string enumerator,
-				IntPtr hwnd,
-				DEVICE_GET_CLASS_FLAGS flags);
+                ref Guid guid,
+                [MarshalAs(UnmanagedType.LPTStr)] string enumerator,
+                IntPtr hwnd,
+                DEVICE_GET_CLASS_FLAGS flags);
 
             [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
             public static extern bool SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet);

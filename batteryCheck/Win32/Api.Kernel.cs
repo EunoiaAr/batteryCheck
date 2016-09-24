@@ -40,7 +40,9 @@ namespace batteryCheck.Win32
                 out uint bytesReturned,
                 IntPtr overlapped);
 
-
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            public static extern bool GetSystemPowerStatus(
+                SYSTEM_POWER_STATUS powerStatus);
         }
     }
 }
