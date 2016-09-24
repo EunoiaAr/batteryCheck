@@ -159,7 +159,7 @@ namespace batteryCheck
 
         static bool SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet)
         {
-            bool retval = SetupDiDestroyDeviceInfoList(deviceInfoSet);
+            bool retval = Api.SetupApi.SetupDiDestroyDeviceInfoList(deviceInfoSet);
 
             if (!retval) {
                 int errorCode = Marshal.GetLastWin32Error();
